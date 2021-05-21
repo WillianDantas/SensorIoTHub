@@ -1,4 +1,4 @@
-var connectionString =  'HostName=SensorHumidade.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=3ViBvVM32qHfpVLamTYJwRLkME9jmO3C/cKrqfGWcj8=';
+var connectionString =  '';
 
 
 

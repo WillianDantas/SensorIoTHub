@@ -1,4 +1,4 @@
-var connectionString =  'HostName=SensorHumidade.azure-devices.net;DeviceId=SensorHumidade;SharedAccessKeyName=iothubowner;SharedAccessKey=3ViBvVM32qHfpVLamTYJwRLkME9jmO3C/cKrqfGWcj8=';
+var connectionString =  '';
 
 var Mqtt = require('azure-iot-device-mqtt').Mqtt;
 var DeviceClient = require('azure-iot-device').Client
