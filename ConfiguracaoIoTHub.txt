@@ -1,0 +1,113 @@
+using System;
+using System.Net.Http;
+using System.Text;
+
+public static void Run(string myIoTHubMessage, ILogger log)
+{
+    var httpClient = new HttpClient();
+    string apiPbi = "https://api.powerbi.com/beta/4683f5f6-5e44-4378-9383-c6f9c83f31c7/datasets/10f1c5c4-2530-4b06-9972-980291fff4ff/rows?key=%2BonhNnb6%2Fh818JSf7nfIQddOHKpUebIki%2BzHitu5paA9gLEzUlkdYdQc9Bv8%2BbF1oMmiAPa4dC%2BXTR5fn92qrw%3D%3D"; 
+    httpClient.PostAsync(apiPbi, new StringContent("[" + myIoTHubMessage + "]", Encoding.UTF8, "application/json"));
+    log.LogInformation($"C# IoT Hub trigger function processed a message: {myIoTHubMessage}");
+}
+
+
+{
+  "bindings": [
+    {
+      "type": "eventHubTrigger",
+      "name": "myIoTHubMessage",
+      "direction": "in",
+      "eventHubName": "samples-workitems",
+      "connection": "SensorHumidade_events_IOTHUB",
+      "consumerGroup": "$Default"
+    }
+  ]
+}
+
+
+{
+  "Temperature": 30.26044081243061,
+  "Humidity": 71.07782781735425,
+  "DtLocal": "Sat May 22 2021 15:37:08 GMT-0300 (GMT-03:00)"
+}
+
+
+AzureWebJobsStorage = DefaultEndpointsProtocol=https;AccountName=iotsensorbi;AccountKey=9YaOHln+sy4GEX/z83mAKzTcMzAS8pzWAfc2/OqIe+lQbGb0vEPnisK1nwNRZKkNqWBZZDnjhDM+2rozJDl70w==;EndpointSuffix=core.windows.net
+SensorHumidade_events_IOTHUB =  Endpoint=sb://ihsuprodsnres017dednamespace.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=uloakvtVtWIKPHx0RpR9Eaf2mLFkvOJ5FF3nQiCcf4Q=;EntityPath=iothub-ehub-sensorhumi-11228712-f85e2a5fff
+
+
+
+[
+  {
+    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+    "value": "5415bd90-f0e0-4511-986a-ffd93ac5fea4",
+    "slotSetting": false
+  },
+  {
+    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+    "value": "InstrumentationKey=5415bd90-f0e0-4511-986a-ffd93ac5fea4;IngestionEndpoint=https://brazilsouth-0.in.applicationinsights.azure.com/",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsSecretStorageType",
+    "value": "files",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=iotsensorbi;AccountKey=9YaOHln+sy4GEX/z83mAKzTcMzAS8pzWAfc2/OqIe+lQbGb0vEPnisK1nwNRZKkNqWBZZDnjhDM+2rozJDl70w==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_EXTENSION_VERSION",
+    "value": "~3",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_WORKER_RUNTIME",
+    "value": "dotnet",
+    "slotSetting": false
+  },
+  {
+    "name": "SensorHumidade_events_IOTHUB",
+    "value": "Endpoint=sb://ihsuprodsnres017dednamespace.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=uloakvtVtWIKPHx0RpR9Eaf2mLFkvOJ5FF3nQiCcf4Q=;EntityPath=iothub-ehub-sensorhumi-11228712-f85e2a5fff",
+    "slotSetting": false
+  }
+]
+
+
+var connectionString =  'HostName=UmidadeIoT.azure-devices.net;DeviceId=SensorUmidade;SharedAccessKey=PLsZt9wo8mowur2NJr/xk6kCihcsvZ3f7mBo9cvsIJg=';
+var Mqtt = require('azure-iot-device-mqtt').Mqtt;
+var DeviceClient = require('azure-iot-device').Client
+var Message = require('azure-iot-device').Message;
+
+
+var client = DeviceClient.fromConnectionString(connectionString, Mqtt);
+
+
+setInterval(function(){
+
+    var d = Date();
+
+    // Simulação de telemetria.
+    var message = new Message(JSON.stringify({
+      Temperature: 20 + (Math.random() * 15),
+      Humidity: 60 + (Math.random() * 20),
+      DtLocal: d.toLocaleString('pt-BR', { timeZone: 'UTC'})
+    }));
+  
+
+  
+    console.log('Envie a mensagem: ' + message.getData());
+  
+    // Envie a mensagem.
+    client.sendEvent(message, function (err) {
+      if (err) {
+        console.error('enviar erro: ' + err.toString());
+      } else {
+        console.log('mensagem enviada');
+      }
+    });
+  }, 1500);
+
+
